@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext.tsx';
+import { LanguageProvider } from './context/LanguageContext.tsx';
 import { FxCanvas } from './components/FxCanvas.tsx';
 import { Storefront } from './components/Storefront.tsx';
 import { LoginPage } from './components/LoginPage.tsx';
@@ -110,8 +111,10 @@ function MainRouter() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <MainRouter />
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <MainRouter />
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

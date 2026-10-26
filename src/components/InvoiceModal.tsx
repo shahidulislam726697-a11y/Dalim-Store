@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext.tsx';
 import { formatMoney } from '../lib/money.ts';
 import { formatDhakaDateTime } from '../lib/dates.ts';
 import { Printer, X, CheckCircle, FileText, Smartphone } from 'lucide-react';
@@ -45,6 +46,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
   shopInfo,
   onNewSale,
 }) => {
+  const { t } = useLanguage();
   const [printFormat, setPrintFormat] = useState<'thermal' | 'a4'>('thermal');
 
   if (!isOpen) return null;
@@ -62,7 +64,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#dcebe2] bg-[#f5faf7]">
           <div className="flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-[#21ad70]" />
-            <h3 className="font-semibold text-[#12352a]">বিক্রয় সফল হয়েছে (Sale Completed)</h3>
+            <h3 className="font-semibold text-[#12352a]">{t('sale_completed')}</h3>
           </div>
           <div className="flex items-center gap-2">
             <div className="flex rounded-lg border border-[#dcebe2] p-0.5 bg-white text-xs">
@@ -72,7 +74,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
                   printFormat === 'thermal' ? 'bg-[#0b6b45] text-white' : 'text-[#688177] hover:text-[#12352a]'
                 }`}
               >
-                ৮০মিমি স্লিপ
+                {t('thermal_print')}
               </button>
               <button
                 onClick={() => setPrintFormat('a4')}
@@ -80,7 +82,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
                   printFormat === 'a4' ? 'bg-[#0b6b45] text-white' : 'text-[#688177] hover:text-[#12352a]'
                 }`}
               >
-                A4 ইনভয়েস
+                {t('a4_print')}
               </button>
             </div>
             <button
@@ -222,7 +224,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
               }}
               className="px-4 py-2 text-sm font-medium text-[#12352a] hover:bg-white rounded-xl border border-[#dcebe2] transition-colors"
             >
-              নতুন বিক্রয় (New Sale)
+              {t('new_sale_btn')}
             </button>
           )}
           <button
@@ -230,7 +232,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
             className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-[#0b6b45] hover:bg-[#21ad70] rounded-xl shadow-md transition-all cursor-pointer"
           >
             <Printer className="w-4 h-4" />
-            প্রিন্ট স্লিপ (Print)
+            {t('print_btn')}
           </button>
         </div>
       </div>

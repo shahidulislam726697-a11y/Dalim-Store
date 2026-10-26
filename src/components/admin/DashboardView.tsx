@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext.tsx';
+import { useLanguage } from '../../context/LanguageContext.tsx';
 import { formatMoney } from '../../lib/money.ts';
 import { formatDhakaDateTime } from '../../lib/dates.ts';
 import {
@@ -42,6 +43,7 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
   onNavigateToProducts,
 }) => {
   const { token, user, shop } = useAuth();
+  const { t } = useLanguage();
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -84,12 +86,12 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
       {/* Welcome banner */}
       <div className="p-6 bg-gradient-to-r from-[#0b6b45] to-[#21ad70] rounded-2xl text-white shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold text-[#2de4a0] uppercase tracking-wider">ড্যাশবোর্ড ওভারভিউ</span>
+          <span className="text-xs font-semibold text-[#2de4a0] uppercase tracking-wider">{t('dashboard_overview')}</span>
           <h2 className="text-xl sm:text-2xl font-bold mt-1">
-            স্বাগতম, {user?.fullName}!
+            {t('welcome')}, {user?.fullName}!
           </h2>
           <p className="text-xs text-white/80 mt-0.5">
-            আজকের সার্বিক বিক্রয়, ইনভেন্টরি ও আর্থিক বিবরণী এক নজরে।
+            {t('dashboard_sub')}
           </p>
         </div>
         <button
@@ -97,7 +99,7 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
           className="flex items-center gap-2 px-5 py-2.5 bg-white text-[#0b6b45] hover:bg-[#2de4a0] hover:text-[#0b6b45] rounded-xl font-bold text-xs shadow-sm transition-all cursor-pointer self-start sm:self-auto"
         >
           <ShoppingCart className="w-4 h-4" />
-          নতুন বিক্রয় (POS)
+          {t('menu_pos')}
         </button>
       </div>
 
@@ -106,7 +108,7 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
         {/* Today's Sales */}
         <div className="p-5 bg-white rounded-2xl border border-[#dcebe2] shadow-xs">
           <div className="flex items-center justify-between text-[#688177]">
-            <span className="text-xs font-medium">আজকের বিক্রয় (Today's Sales)</span>
+            <span className="text-xs font-medium">{t('today_sales')}</span>
             <div className="p-2 bg-[#e8f7ee] text-[#0b6b45] rounded-xl">
               <TrendingUp className="w-4 h-4" />
             </div>
@@ -115,15 +117,15 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
             {formatMoney(data?.todaySales || 0, currency)}
           </div>
           <div className="text-[11px] text-[#688177] mt-1 flex items-center gap-1">
-            <span>আজকের মোট ইনভয়েস:</span>
-            <span className="font-bold text-[#0b6b45] font-inter tabular-nums">{data?.invoicesToday || 0}টি</span>
+            <span>{t('today_invoices')}:</span>
+            <span className="font-bold text-[#0b6b45] font-inter tabular-nums">{data?.invoicesToday || 0}</span>
           </div>
         </div>
 
         {/* Today's Expense */}
         <div className="p-5 bg-white rounded-2xl border border-[#dcebe2] shadow-xs">
           <div className="flex items-center justify-between text-[#688177]">
-            <span className="text-xs font-medium">আজকের খরচ (Today's Expense)</span>
+            <span className="text-xs font-medium">{t('today_expense')}</span>
             <div className="p-2 bg-rose-50 text-rose-600 rounded-xl">
               <DollarSign className="w-4 h-4" />
             </div>
@@ -131,14 +133,14 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
           <div className="text-2xl font-bold text-rose-700 mt-2 font-inter tabular-nums">
             {formatMoney(data?.todayExpense || 0, currency)}
           </div>
-          <div className="text-[11px] text-[#688177] mt-1">দোকানের যাবতীয় দৈনিক খরচ</div>
+          <div className="text-[11px] text-[#688177] mt-1">{t('today_expense_desc')}</div>
         </div>
 
         {/* Gross Profit (Cashier cannot see) */}
         {canSeeProfits && (
           <div className="p-5 bg-white rounded-2xl border border-[#dcebe2] shadow-xs">
             <div className="flex items-center justify-between text-[#688177]">
-              <span className="text-xs font-medium">আজকের মোট লাভ (Gross Profit)</span>
+              <span className="text-xs font-medium">{t('today_gross_profit')}</span>
               <div className="p-2 bg-[#e8f7ee] text-[#21ad70] rounded-xl">
                 <ArrowUpRight className="w-4 h-4" />
               </div>
@@ -146,7 +148,7 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
             <div className="text-2xl font-bold text-[#0b6b45] mt-2 font-inter tabular-nums">
               {formatMoney(data?.grossProfitToday || 0, currency)}
             </div>
-            <div className="text-[11px] text-[#688177] mt-1">বিক্রিত পণ্যের গড় লাভ</div>
+            <div className="text-[11px] text-[#688177] mt-1">Gross Profit Margin</div>
           </div>
         )}
 
@@ -154,7 +156,7 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
         {canSeeProfits && (
           <div className="p-5 bg-white rounded-2xl border border-[#dcebe2] shadow-xs">
             <div className="flex items-center justify-between text-[#688177]">
-              <span className="text-xs font-medium">আজকের নিট লাভ (Net Profit)</span>
+              <span className="text-xs font-medium">{t('today_net_profit')}</span>
               <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
                 <TrendingUp className="w-4 h-4" />
               </div>
@@ -166,7 +168,7 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
             >
               {formatMoney(data?.netProfitToday || 0, currency)}
             </div>
-            <div className="text-[11px] text-[#688177] mt-1">মোট লাভ − আজকের খরচ</div>
+            <div className="text-[11px] text-[#688177] mt-1">Net profit after expenses</div>
           </div>
         )}
       </div>
@@ -179,51 +181,51 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
           className="p-4 bg-white rounded-2xl border border-[#dcebe2] shadow-xs hover:border-amber-400 transition-colors cursor-pointer"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#688177]">স্বল্প স্টক পণ্য (Low Stock)</span>
+            <span className="text-xs font-medium text-[#688177]">{t('low_stock_kpi')}</span>
             <AlertTriangle className="w-4 h-4 text-amber-500" />
           </div>
           <div className="text-xl font-bold text-amber-700 mt-1 font-inter tabular-nums">
-            {data?.lowStockCount || 0} টি
+            {data?.lowStockCount || 0}
           </div>
-          <span className="text-[10px] text-amber-600 font-medium">ক্লিক করে পণ্যগুলো দেখুন →</span>
+          <span className="text-[10px] text-amber-600 font-medium">View items →</span>
         </div>
 
         {/* Total Stock Quantity */}
         <div className="p-4 bg-white rounded-2xl border border-[#dcebe2] shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#688177]">মোট মজুদ (Total Stock)</span>
+            <span className="text-xs font-medium text-[#688177]">{t('total_stock_kpi')}</span>
             <Package className="w-4 h-4 text-[#0b6b45]" />
           </div>
           <div className="text-xl font-bold text-[#12352a] mt-1 font-inter tabular-nums">
-            {data?.totalStockQty || 0} টি
+            {data?.totalStockQty || 0}
           </div>
-          <span className="text-[10px] text-[#688177]">সকল সক্রিয় পণ্যের মোট সংখ্যা</span>
+          <span className="text-[10px] text-[#688177]">Active inventory count</span>
         </div>
 
         {/* Stock Value */}
         {canSeeProfits && (
           <div className="p-4 bg-white rounded-2xl border border-[#dcebe2] shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-[#688177]">মজুদ পণ্যের ক্রয়মূল্য</span>
+              <span className="text-xs font-medium text-[#688177]">{t('stock_value_kpi')}</span>
               <DollarSign className="w-4 h-4 text-[#21ad70]" />
             </div>
             <div className="text-xl font-bold text-[#12352a] mt-1 font-inter tabular-nums">
               {formatMoney(data?.stockValue || 0, currency)}
             </div>
-            <span className="text-[10px] text-[#688177]">বর্তমান ইনভেন্টরি ভ্যালু</span>
+            <span className="text-[10px] text-[#688177]">Total inventory buy value</span>
           </div>
         )}
 
         {/* Stock Added Today */}
         <div className="p-4 bg-white rounded-2xl border border-[#dcebe2] shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#688177]">আজ নতুন স্টক যুক্ত</span>
+            <span className="text-xs font-medium text-[#688177]">{t('stock_added_kpi')}</span>
             <Receipt className="w-4 h-4 text-[#0b6b45]" />
           </div>
           <div className="text-xl font-bold text-[#0b6b45] mt-1 font-inter tabular-nums">
-            +{data?.stockAddedToday || 0} টি
+            +{data?.stockAddedToday || 0}
           </div>
-          <span className="text-[10px] text-[#688177]">আজকের পারচেজ এন্ট্রি</span>
+          <span className="text-[10px] text-[#688177]">Received batches today</span>
         </div>
       </div>
 
@@ -232,7 +234,7 @@ export const DashboardView: React.FC<{ onNavigateToPos: () => void; onNavigateTo
         <div className="p-5 border-b border-[#dcebe2] flex items-center justify-between">
           <h3 className="font-bold text-sm sm:text-base text-[#12352a] flex items-center gap-2">
             <Receipt className="w-4 h-4 text-[#0b6b45]" />
-            সর্বশেষ বিক্রয়সমূহ (Recent Invoices)
+            {t('recent_invoices')}
           </h3>
         </div>
 

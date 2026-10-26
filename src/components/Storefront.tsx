@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { ShoppingBag, Search, X, Plus, Minus, Check, ArrowRight, ShieldCheck, Truck, Clock, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { formatMoney } from '../lib/money.ts';
+import { useLanguage } from '../context/LanguageContext.tsx';
+import { LanguageToggle } from './LanguageToggle.tsx';
 
 interface Product {
   id: number;
@@ -33,6 +35,7 @@ interface CartItem {
 }
 
 export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavigateToAdmin }) => {
+  const { t, lang } = useLanguage();
   const [shop, setShop] = useState<Shop | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -225,7 +228,7 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#688177]" />
               <input
                 type="text"
-                placeholder="পণ্য খুঁজুন (নাম, কোড)..."
+                placeholder={t('search_placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 text-sm bg-[#f5faf7] rounded-xl border border-[#dcebe2] focus:outline-none focus:border-[#21ad70] focus:ring-2 focus:ring-[#2de4a0]/20 transition-all"
@@ -242,14 +245,17 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            {/* Bangla / English Language Change Button */}
+            <LanguageToggle />
+
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center gap-2 px-4 py-2 bg-[#0b6b45] hover:bg-[#21ad70] text-white rounded-xl shadow-md transition-all cursor-pointer font-medium text-sm"
+              className="relative flex items-center gap-2 px-3.5 py-2 bg-[#0b6b45] hover:bg-[#21ad70] text-white rounded-xl shadow-md transition-all cursor-pointer font-medium text-sm"
               aria-label="View Cart"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span className="hidden sm:inline">ব্যাগ</span>
+              <span className="hidden sm:inline">{t('cart_bag')}</span>
               {totalCartCount > 0 && (
                 <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold bg-[#2de4a0] text-[#0b6b45] rounded-full tabular-nums">
                   {totalCartCount}
@@ -261,7 +267,7 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
               onClick={onNavigateToAdmin}
               className="px-3 py-2 text-xs font-semibold text-[#0b6b45] hover:bg-[#e4f3eb] rounded-xl border border-[#dcebe2] transition-colors"
             >
-              অ্যাডমিন পোর্টাল
+              {t('admin_portal')}
             </button>
           </div>
         </div>
@@ -272,7 +278,7 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#688177]" />
             <input
               type="text"
-              placeholder="পণ্য খুঁজুন..."
+              placeholder={t('search_input_placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 text-sm bg-[#f5faf7] rounded-xl border border-[#dcebe2] focus:outline-none focus:border-[#21ad70]"
@@ -288,31 +294,31 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
             <div className="lg:col-span-7 space-y-5">
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-white rounded-full border border-[#dcebe2] text-xs font-semibold text-[#0b6b45] shadow-xs">
                 <Sparkles className="w-3.5 h-3.5 text-[#21ad70]" />
-                SMART SHOPPING • DALIM STORE
+                {t('hero_badge')}
               </div>
               <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight text-[#12352a]">
-                আপনার প্রয়োজনীয় পণ্য, <br />
+                {t('hero_title_1')} <br />
                 <span className="bg-gradient-to-r from-[#0b6b45] via-[#21ad70] to-[#2de4a0] bg-clip-text text-transparent">
-                  সহজে এক জায়গায়।
+                  {t('hero_title_2')}
                 </span>
               </h1>
               <p className="text-sm sm:text-base text-[#688177] max-w-xl leading-relaxed">
-                তাজা গ্রোসারি, নিত্যপ্রয়োজনীয় পণ্য ও ঘরোয়া সামগ্রী কিনুন সবচেয়ে সেরা মূল্যে। দ্রুত ডেলিভারি এবং ক্যাশ অন ডেলিভারি সুবিধা।
+                {t('hero_desc')}
               </p>
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 pt-4 max-w-md">
                 <div className="p-3 bg-white rounded-xl border border-[#dcebe2] shadow-xs">
                   <div className="text-xl sm:text-2xl font-bold text-[#0b6b45] tabular-nums">{products.length}+</div>
-                  <div className="text-xs text-[#688177] mt-0.5">পণ্য সামগ্রী</div>
+                  <div className="text-xs text-[#688177] mt-0.5">{t('stat_products')}</div>
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-[#dcebe2] shadow-xs">
-                  <div className="text-xl sm:text-2xl font-bold text-[#0b6b45] tabular-nums">{categories.length}টি</div>
-                  <div className="text-xs text-[#688177] mt-0.5">ক্যাটাগরি</div>
+                  <div className="text-xl sm:text-2xl font-bold text-[#0b6b45] tabular-nums">{categories.length}</div>
+                  <div className="text-xs text-[#688177] mt-0.5">{t('stat_categories')}</div>
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-[#dcebe2] shadow-xs">
-                  <div className="text-xl sm:text-2xl font-bold text-[#21ad70]">২৪/৭</div>
-                  <div className="text-xs text-[#688177] mt-0.5">অনলাইন অর্ডার</div>
+                  <div className="text-xl sm:text-2xl font-bold text-[#21ad70]">{t('stat_orders')}</div>
+                  <div className="text-xs text-[#688177] mt-0.5">24/7 Delivery</div>
                 </div>
               </div>
             </div>
@@ -325,8 +331,12 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                 <div className="absolute inset-6 rounded-full border border-[#21ad70]/30" />
                 <div className="w-48 h-48 rounded-full bg-gradient-to-tr from-[#0b6b45] to-[#21ad70] shadow-xl flex flex-col items-center justify-center text-white text-center p-6">
                   <ShoppingBag className="w-16 h-16 mb-2 text-[#2de4a0]" />
-                  <span className="font-pacifico text-xl text-white">ডালিম স্টোর</span>
-                  <span className="text-[11px] text-white/80 mt-1">খাঁটি ও নির্ভরযোগ্য</span>
+                  <span className="font-pacifico text-xl text-white">
+                    {lang === 'bn' ? 'ডালিম স্টোর' : 'Dalim Store'}
+                  </span>
+                  <span className="text-[11px] text-white/80 mt-1">
+                    {lang === 'bn' ? 'খাঁটি ও নির্ভরযোগ্য' : 'Trusted & Pure'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -337,17 +347,17 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
       {/* Marquee Strip */}
       <div className="bg-[#0b6b45] text-white py-2.5 overflow-hidden border-y border-[#21ad70]/40">
         <div className="flex whitespace-nowrap animate-marquee text-xs font-medium tracking-wide">
-          <span className="mx-6">✨ প্রতিদিন নতুন পণ্য</span>
+          <span className="mx-6">{t('marquee_text_1')}</span>
           <span className="mx-6">·</span>
-          <span className="mx-6">🛒 ক্যাশ অন ডেলিভারিতে সহজ অর্ডার</span>
+          <span className="mx-6">{t('marquee_text_2')}</span>
           <span className="mx-6">·</span>
-          <span className="mx-6">💚 Dalim Store — গ্রাহক সন্তুষ্টি আমাদের লক্ষ্য</span>
+          <span className="mx-6">{t('marquee_text_3')}</span>
           <span className="mx-6">·</span>
-          <span className="mx-6">📦 সব প্রয়োজনীয় পণ্য এক ছাদের নিচে</span>
+          <span className="mx-6">{t('marquee_text_4')}</span>
           <span className="mx-6">·</span>
-          <span className="mx-6">✨ প্রতিদিন নতুন পণ্য</span>
+          <span className="mx-6">{t('marquee_text_1')}</span>
           <span className="mx-6">·</span>
-          <span className="mx-6">🛒 ক্যাশ অন ডেলিভারিতে সহজ অর্ডার</span>
+          <span className="mx-6">{t('marquee_text_2')}</span>
         </div>
       </div>
 
@@ -363,7 +373,7 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                 : 'bg-white text-[#688177] hover:text-[#12352a] border border-[#dcebe2]'
             }`}
           >
-            সব পণ্য ({products.length})
+            {t('all_products')} ({products.length})
           </button>
           {categories.map((cat) => {
             const count = products.filter((p) => p.categoryId === cat.id).length;
@@ -397,8 +407,7 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-[#dcebe2] mt-6 p-8">
             <ShoppingBag className="w-12 h-12 text-[#688177] mx-auto mb-3 opacity-40" />
-            <h3 className="text-lg font-bold text-[#12352a]">কোনো পণ্য পাওয়া যায়নি</h3>
-            <p className="text-sm text-[#688177] mt-1">অনুগ্রহ করে অন্য কোনো কি-ওয়ার্ড দিয়ে খুঁজুন বা ফিল্টার পরিবর্তন করুন।</p>
+            <h3 className="text-lg font-bold text-[#12352a]">{t('no_products_found')}</h3>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
@@ -418,20 +427,21 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
-                          // Hide image and fallback to placeholder
                           (e.target as HTMLElement).style.display = 'none';
                         }}
                       />
                     ) : (
                       <div className="w-full h-full rounded-xl bg-gradient-to-br from-emerald-50 to-[#dcebe2] flex flex-col items-center justify-center text-[#0b6b45]">
                         <ShoppingBag className="w-10 h-10 opacity-60 mb-1" />
-                        <span className="text-[11px] font-medium text-slate-500">ডালিম স্টোর</span>
+                        <span className="text-[11px] font-medium text-slate-500">
+                          {lang === 'bn' ? 'ডালিম স্টোর' : 'Dalim Store'}
+                        </span>
                       </div>
                     )}
                     {/* Stock status badge */}
                     <div className="absolute top-3 right-3">
                       <span className="px-2 py-0.5 text-[11px] font-semibold bg-white/90 backdrop-blur-xs text-[#0b6b45] rounded-md shadow-xs border border-[#dcebe2]">
-                        স্টক: {p.stock}
+                        {t('stock_label')}: {p.stock}
                       </span>
                     </div>
                   </div>
@@ -461,7 +471,7 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                         className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#0b6b45] hover:bg-[#21ad70] rounded-xl shadow-xs transition-colors cursor-pointer"
                       >
                         <Plus className="w-3.5 h-3.5" />
-                        কার্টে যোগ করুন
+                        {t('add_to_cart')}
                       </button>
                     </div>
                   </div>
@@ -478,8 +488,8 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
               <Truck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-[#12352a] text-sm">দ্রুত হোম ডেলিভারি</h4>
-              <p className="text-xs text-[#688177] mt-1">অর্ডার নিশ্চিত করার পর স্বল্প সময়ের মধ্যে আপনার ঠিকানায় পৌঁছাবে।</p>
+              <h4 className="font-bold text-[#12352a] text-sm">{t('trust_fast_delivery')}</h4>
+              <p className="text-xs text-[#688177] mt-1">{t('trust_fast_delivery_desc')}</p>
             </div>
           </div>
           <div className="p-5 bg-white rounded-2xl border border-[#dcebe2] flex items-start gap-4">
@@ -487,8 +497,8 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-[#12352a] text-sm">১০০% খাঁটি পণ্য</h4>
-              <p className="text-xs text-[#688177] mt-1">প্রতিটি পণ্যের গুণগত মান ও ওজনের নিশ্চয়তা দিয়ে থাকি আমরা।</p>
+              <h4 className="font-bold text-[#12352a] text-sm">{t('trust_authentic')}</h4>
+              <p className="text-xs text-[#688177] mt-1">{t('trust_authentic_desc')}</p>
             </div>
           </div>
           <div className="p-5 bg-white rounded-2xl border border-[#dcebe2] flex items-start gap-4">
@@ -496,8 +506,8 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-[#12352a] text-sm">সহজ ক্যাশ অন ডেলিভারি</h4>
-              <p className="text-xs text-[#688177] mt-1">পণ্য হাতে পেয়ে দেখে মূল্য পরিশোধের সম্পূর্ণ নিশ্চিন্ত ব্যবস্থা।</p>
+              <h4 className="font-bold text-[#12352a] text-sm">{t('trust_cod')}</h4>
+              <p className="text-xs text-[#688177] mt-1">{t('trust_cod_desc')}</p>
             </div>
           </div>
         </section>
@@ -516,7 +526,9 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
               <div className="px-6 py-4 border-b border-[#dcebe2] flex items-center justify-between bg-[#f5faf7]">
                 <div className="flex items-center gap-2">
                   <ShoppingBag className="w-5 h-5 text-[#0b6b45]" />
-                  <h3 className="font-bold text-base text-[#12352a]">আপনার শপিং ব্যাগ ({totalCartCount})</h3>
+                  <h3 className="font-bold text-base text-[#12352a]">
+                    {t('cart_title')} ({totalCartCount})
+                  </h3>
                 </div>
                 <button
                   onClick={() => setIsCartOpen(false)}
@@ -533,7 +545,7 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                     <div className="w-12 h-12 bg-[#21ad70] text-white rounded-full flex items-center justify-center mx-auto">
                       <Check className="w-6 h-6" />
                     </div>
-                    <h4 className="font-bold text-lg text-[#0b6b45]">অর্ডার সফল হয়েছে!</h4>
+                    <h4 className="font-bold text-lg text-[#0b6b45]">{t('order_success')}</h4>
                     <p className="text-xs text-[#12352a] leading-relaxed">{orderSuccessMessage}</p>
                     <button
                       onClick={() => {
@@ -542,18 +554,18 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                       }}
                       className="mt-3 px-4 py-2 bg-[#0b6b45] text-white text-xs font-semibold rounded-xl"
                     >
-                      আরও কেনাকাটা করুন
+                      {t('shop_more')}
                     </button>
                   </div>
                 ) : cart.length === 0 ? (
                   <div className="text-center py-16 text-[#688177]">
                     <ShoppingBag className="w-12 h-12 mx-auto mb-2 opacity-30" />
-                    <p className="text-sm font-medium">আপনার ব্যাগ খালি</p>
+                    <p className="text-sm font-medium">{t('cart_empty')}</p>
                     <button
                       onClick={() => setIsCartOpen(false)}
                       className="mt-4 px-4 py-2 bg-[#0b6b45] text-white text-xs font-semibold rounded-xl"
                     >
-                      পণ্য দেখুন
+                      {t('cart_view_products')}
                     </button>
                   </div>
                 ) : (
@@ -612,21 +624,21 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                     {/* Order summary */}
                     <div className="pt-4 border-t border-[#dcebe2] space-y-2">
                       <div className="flex justify-between text-sm text-[#688177]">
-                        <span>মোট মূল্য:</span>
+                        <span>{t('subtotal')}:</span>
                         <span className="font-bold text-[#12352a] tabular-nums">
                           {formatMoney(totalCartPrice, currency)}
                         </span>
                       </div>
                       <div className="flex justify-between text-xs text-[#688177]">
-                        <span>ডেলিভারি চার্জ:</span>
-                        <span className="text-[#21ad70] font-semibold">ফ্রি / নির্ধারিত</span>
+                        <span>{t('delivery_fee')}:</span>
+                        <span className="text-[#21ad70] font-semibold">{t('free_delivery')}</span>
                       </div>
                     </div>
 
                     {/* Checkout Form */}
                     <form onSubmit={handleCheckout} className="pt-4 border-t border-[#dcebe2] space-y-3">
                       <h4 className="font-bold text-xs uppercase tracking-wider text-[#0b6b45]">
-                        অর্ডারের তথ্য (ডেলিভারির জন্য)
+                        {t('order_info')}
                       </h4>
 
                       {orderErrorMessage && (
@@ -637,12 +649,12 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
 
                       <div>
                         <label className="block text-xs font-medium text-[#12352a] mb-1">
-                          আপনার পূর্ণ নাম *
+                          {t('full_name_label')}
                         </label>
                         <input
                           type="text"
                           required
-                          placeholder="উদাঃ মো. রফিক"
+                          placeholder={lang === 'bn' ? 'উদাঃ মো. রফিক' : 'e.g. John Doe'}
                           value={customerName}
                           onChange={(e) => setCustomerName(e.target.value)}
                           className="w-full px-3 py-2 text-xs bg-[#f5faf7] border border-[#dcebe2] rounded-xl focus:outline-none focus:border-[#21ad70]"
@@ -651,7 +663,7 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
 
                       <div>
                         <label className="block text-xs font-medium text-[#12352a] mb-1">
-                          ১১ ডিজিটের মোবাইল নম্বর *
+                          {t('phone_label')}
                         </label>
                         <input
                           type="tel"
@@ -665,11 +677,11 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
 
                       <div>
                         <label className="block text-xs font-medium text-[#12352a] mb-1">
-                          ঠিকানা (বাসা / রোড / এলাকা)
+                          {t('address_label')}
                         </label>
                         <textarea
                           rows={2}
-                          placeholder="উদাঃ বাসা #১২, ধানমন্ডি, ঢাকা"
+                          placeholder={lang === 'bn' ? 'উদাঃ বাসা #১২, ধানমন্ডি, ঢাকা' : 'e.g. House #12, Dhanmondi, Dhaka'}
                           value={customerAddress}
                           onChange={(e) => setCustomerAddress(e.target.value)}
                           className="w-full px-3 py-2 text-xs bg-[#f5faf7] border border-[#dcebe2] rounded-xl focus:outline-none focus:border-[#21ad70]"
@@ -678,7 +690,7 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
 
                       <div className="p-2.5 bg-[#e8f7ee] rounded-xl text-[11px] text-[#0b6b45] flex items-center gap-2">
                         <Check className="w-4 h-4 shrink-0 text-[#21ad70]" />
-                        <span>ক্যাশ অন ডেলিভারি (পণ্য হাতে পেয়ে টাকা পরিশোধ করুন)</span>
+                        <span>{t('cod_note')}</span>
                       </div>
 
                       <button
@@ -687,10 +699,10 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                         className="w-full py-3 bg-[#0b6b45] hover:bg-[#21ad70] text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                       >
                         {isSubmittingOrder ? (
-                          'অর্ডার গ্রহণ করা হচ্ছে...'
+                          t('loading')
                         ) : (
                           <>
-                            অর্ডার নিশ্চিত করুন ({formatMoney(totalCartPrice, currency)})
+                            {t('place_order_btn')} ({formatMoney(totalCartPrice, currency)})
                             <ArrowRight className="w-4 h-4" />
                           </>
                         )}
@@ -706,19 +718,22 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
 
       {/* Footer */}
       <footer className="bg-white border-t border-[#dcebe2] py-8 text-center text-xs text-[#688177]">
-        <div className="max-w-7xl mx-auto px-4 space-y-2">
+        <div className="max-w-7xl mx-auto px-4 space-y-3">
+          <div className="flex justify-center pb-1">
+            <LanguageToggle />
+          </div>
           <p className="font-medium text-[#12352a]">
             © {new Date().getFullYear()} {shop?.shopName || 'Dalim Store'} · Developed by Tousif
           </p>
           <p className="text-[11px]">
-            খাঁটি পণ্য ও দ্রুততম সেবায় বিশ্বস্ত রিটেইল শপ | ঢাকা, বাংলাদেশ
+            {t('footer_text')}
           </p>
-          <div className="pt-2">
+          <div className="pt-1">
             <button
               onClick={onNavigateToAdmin}
               className="text-[#0b6b45] hover:underline font-semibold"
             >
-              কর্মকর্তা লগইন (Staff / Admin Login)
+              {t('staff_login')}
             </button>
           </div>
         </div>

@@ -17,6 +17,8 @@ import {
   X,
   ExternalLink,
 } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext.tsx';
+import { LanguageToggle } from '../LanguageToggle.tsx';
 import { DashboardView } from './DashboardView.tsx';
 import { PosView } from './PosView.tsx';
 import { ProductsView } from './ProductsView.tsx';
@@ -48,6 +50,7 @@ export const AdminLayout: React.FC<{
   onGoToStorefront: () => void;
 }> = ({ currentTab, onSelectTab, onGoToStorefront }) => {
   const { user, shop, logout } = useAuth();
+  const { t, lang } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [productFilter, setProductFilter] = useState<string | undefined>(undefined);
 
@@ -56,29 +59,29 @@ export const AdminLayout: React.FC<{
 
   const navSections = [
     {
-      title: 'মূল মেনু (Main)',
+      title: t('nav_main'),
       items: [
-        { id: 'dashboard' as AdminTab, label: 'ড্যাশবোর্ড', icon: LayoutDashboard },
-        { id: 'pos' as AdminTab, label: 'POS / নতুন বিক্রয়', icon: ShoppingCart },
-        { id: 'products' as AdminTab, label: 'পণ্য ও স্টক', icon: Package },
-        { id: 'categories' as AdminTab, label: 'ক্যাটাগরি', icon: Tag },
+        { id: 'dashboard' as AdminTab, label: t('menu_dashboard'), icon: LayoutDashboard },
+        { id: 'pos' as AdminTab, label: t('menu_pos'), icon: ShoppingCart },
+        { id: 'products' as AdminTab, label: t('menu_products'), icon: Package },
+        { id: 'categories' as AdminTab, label: t('menu_categories'), icon: Tag },
       ],
     },
     {
-      title: 'হিসাব খাতা (Accounts)',
+      title: t('nav_accounts'),
       items: [
-        { id: 'sales' as AdminTab, label: 'বিক্রয় ও চালান', icon: Receipt },
-        { id: 'customers' as AdminTab, label: 'কাস্টমার ও বাকি', icon: Users },
-        { id: 'expenses' as AdminTab, label: 'দৈনিক খরচ', icon: DollarSign },
-        { id: 'reports' as AdminTab, label: 'ব্যবসা রিপোর্ট', icon: BarChart3 },
+        { id: 'sales' as AdminTab, label: t('menu_sales'), icon: Receipt },
+        { id: 'customers' as AdminTab, label: t('menu_customers'), icon: Users },
+        { id: 'expenses' as AdminTab, label: t('menu_expenses'), icon: DollarSign },
+        { id: 'reports' as AdminTab, label: t('menu_reports'), icon: BarChart3 },
       ],
     },
     {
-      title: 'প্রশাসন (Administration)',
+      title: t('nav_admin'),
       items: [
-        { id: 'settings' as AdminTab, label: 'সেটিংস ও QR', icon: Settings, visible: isAdmin },
-        { id: 'users' as AdminTab, label: 'ব্যবহারকারী (Users)', icon: Shield, visible: isAdmin },
-        { id: 'shops' as AdminTab, label: 'দোকানের শাখা (Shops)', icon: Store, visible: isAdmin },
+        { id: 'settings' as AdminTab, label: t('menu_settings'), icon: Settings, visible: isAdmin },
+        { id: 'users' as AdminTab, label: t('menu_users'), icon: Shield, visible: isAdmin },
+        { id: 'shops' as AdminTab, label: t('menu_shops'), icon: Store, visible: isAdmin },
       ].filter((i) => i.visible !== false),
     },
   ];
@@ -92,27 +95,27 @@ export const AdminLayout: React.FC<{
   const getPageTitle = (tab: AdminTab) => {
     switch (tab) {
       case 'dashboard':
-        return 'ড্যাশবোর্ড ওভারভিউ';
+        return t('menu_dashboard');
       case 'pos':
-        return 'পয়েন্ট অব সেল (POS)';
+        return t('menu_pos');
       case 'products':
-        return 'পণ্য ও ইনভেন্টরি তালিকা';
+        return t('menu_products');
       case 'categories':
-        return 'ক্যাটাগরি ব্যবস্থাপনা';
+        return t('menu_categories');
       case 'sales':
-        return 'বিক্রয় ও ইনভয়েস রেকর্ড';
+        return t('menu_sales');
       case 'customers':
-        return 'কাস্টমার ও বাকি খাতা';
+        return t('menu_customers');
       case 'expenses':
-        return 'দৈনিক খরচের হিসাব';
+        return t('menu_expenses');
       case 'reports':
-        return 'ব্যবসায়িক প্রতিবেদন ও রিপোর্ট';
+        return t('menu_reports');
       case 'settings':
-        return 'দোকানের সেটিংস';
+        return t('menu_settings');
       case 'users':
-        return 'ইউজার ও ভূমিকা নিয়ন্ত্রণ';
+        return t('menu_users');
       case 'shops':
-        return 'দোকানের শাখা ও আউটলেট';
+        return t('menu_shops');
     }
   };
 
@@ -264,14 +267,17 @@ export const AdminLayout: React.FC<{
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Bangla / English Language Change Button */}
+            <LanguageToggle />
+
             {currentTab !== 'pos' && (
               <button
                 onClick={() => onSelectTab('pos')}
                 className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0b6b45] hover:bg-[#21ad70] text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
               >
                 <ShoppingCart className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">POS বিক্রয়</span>
+                <span className="hidden sm:inline">{t('menu_pos')}</span>
               </button>
             )}
 
@@ -280,7 +286,7 @@ export const AdminLayout: React.FC<{
               className="flex items-center gap-1.5 px-3 py-1.5 border border-[#dcebe2] hover:bg-[#f5faf7] text-xs font-semibold text-[#0b6b45] rounded-xl transition-colors cursor-pointer"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">পাবলিক শপ</span>
+              <span className="hidden sm:inline">{t('public_store')}</span>
             </button>
           </div>
         </header>

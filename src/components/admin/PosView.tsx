@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext.tsx';
+import { useLanguage } from '../../context/LanguageContext.tsx';
 import { formatMoney, calculateSaleTotals } from '../../lib/money.ts';
 import { InvoiceModal } from '../InvoiceModal.tsx';
 import confetti from 'canvas-confetti';
@@ -47,6 +48,7 @@ interface CartItem {
 
 export const PosView: React.FC = () => {
   const { token, shop } = useAuth();
+  const { t } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -337,7 +339,7 @@ export const PosView: React.FC = () => {
               <input
                 ref={barcodeInputRef}
                 type="text"
-                placeholder="বারকোড স্ক্যান (Enter চাপুন)..."
+                placeholder={t('barcode_scan_placeholder')}
                 value={barcodeInput}
                 onChange={(e) => setBarcodeInput(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-[#dcebe2] rounded-xl focus:outline-none focus:border-[#21ad70] focus:ring-2 focus:ring-[#2de4a0]/20 font-mono"
@@ -349,7 +351,7 @@ export const PosView: React.FC = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#688177]" />
               <input
                 type="text"
-                placeholder="নাম বা SKU দিয়ে খুঁজুন..."
+                placeholder={t('sku_search_placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-[#dcebe2] rounded-xl focus:outline-none focus:border-[#21ad70]"
@@ -367,7 +369,7 @@ export const PosView: React.FC = () => {
                   : 'bg-white text-[#688177] hover:text-[#12352a] border border-[#dcebe2]'
               }`}
             >
-              সব ({products.length})
+              {t('all_products')} ({products.length})
             </button>
             {categories.map((c) => (
               <button
@@ -451,7 +453,7 @@ export const PosView: React.FC = () => {
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-4 h-4 text-[#0b6b45]" />
             <h3 className="font-bold text-sm text-[#12352a]">
-              কার্ট ({cart.reduce((a, b) => a + b.qty, 0)})
+              {t('cart_heading')} ({cart.reduce((a, b) => a + b.qty, 0)})
             </h3>
           </div>
           {cart.length > 0 && (
@@ -459,7 +461,7 @@ export const PosView: React.FC = () => {
               onClick={clearCart}
               className="text-xs text-rose-600 hover:text-rose-800 font-semibold cursor-pointer"
             >
-              কার্ট খালি করুন
+              {t('clear_cart')}
             </button>
           )}
         </div>
@@ -476,8 +478,8 @@ export const PosView: React.FC = () => {
           {cart.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-[#688177] py-12 text-center">
               <ShoppingBag className="w-12 h-12 opacity-30 mb-2" />
-              <p className="text-xs font-semibold">কার্ট খালি</p>
-              <p className="text-[11px] mt-0.5">বাম পাশ থেকে পণ্য নির্বাচন করুন অথবা বারকোড স্ক্যান করুন</p>
+              <p className="text-xs font-semibold">{t('cart_empty')}</p>
+              <p className="text-[11px] mt-0.5">Select items from catalog or scan barcode</p>
             </div>
           ) : (
             cart.map((item) => (
@@ -540,7 +542,7 @@ export const PosView: React.FC = () => {
               onChange={(e) => setSelectedCustomerId(e.target.value ? Number(e.target.value) : null)}
               className="flex-1 px-3 py-1.5 text-xs bg-white border border-[#dcebe2] rounded-xl focus:outline-none focus:border-[#21ad70]"
             >
-              <option value="">সাধারণ ক্রেতা (Walking Customer)</option>
+              <option value="">{t('select_customer')}</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name} ({c.phone})
@@ -550,7 +552,7 @@ export const PosView: React.FC = () => {
             <button
               onClick={() => setIsAddCustomerOpen(true)}
               className="p-1.5 bg-white border border-[#dcebe2] rounded-xl text-[#0b6b45] hover:bg-[#e8f7ee] transition-colors"
-              title="নতুন কাস্টমার যুক্ত করুন"
+              title={t('add_customer_btn')}
             >
               <UserPlus className="w-4 h-4" />
             </button>
@@ -559,13 +561,13 @@ export const PosView: React.FC = () => {
           {/* Subtotal & Discount */}
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <span className="text-[#688177]">মোট মূল্য (Subtotal):</span>
+              <span className="text-[#688177]">{t('subtotal')}:</span>
               <div className="font-bold text-[#12352a] font-mono tabular-nums text-sm">
                 {formatMoney(totals.subtotal, currency)}
               </div>
             </div>
             <div>
-              <span className="text-[#688177]">ছাড় (Discount):</span>
+              <span className="text-[#688177]">{t('discount')}:</span>
               <div className="relative mt-0.5">
                 <input
                   type="number"
@@ -589,12 +591,12 @@ export const PosView: React.FC = () => {
                   onChange={(e) => setIsFullPaid(e.target.checked)}
                   className="rounded border-[#dcebe2] text-[#0b6b45] focus:ring-[#21ad70]"
                 />
-                পুরো টাকা পরিশোধ (Full Paid)
+                {t('full_paid')}
               </label>
 
               {!isFullPaid && (
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#688177]">পরিশোধ:</span>
+                  <span className="text-xs text-[#688177]">{t('paid_amount')}:</span>
                   <input
                     type="number"
                     min={0}
@@ -609,19 +611,19 @@ export const PosView: React.FC = () => {
 
             {/* Payment method select */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#688177] shrink-0">পেমেন্ট মাধ্যম:</span>
+              <span className="text-xs text-[#688177] shrink-0">{t('payment_method')}:</span>
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="flex-1 px-2.5 py-1 text-xs bg-white border border-[#dcebe2] rounded-lg focus:outline-none"
               >
-                <option value="cash">নগদ (Cash)</option>
-                <option value="bkash">বিকাশ (bKash)</option>
-                <option value="nagad">নগদ (Nagad)</option>
-                <option value="rocket">রকেট (Rocket)</option>
-                <option value="card">কার্ড (Card)</option>
-                <option value="bank">ব্যাংক (Bank)</option>
-                <option value="bangla_qr">বাংলা কিউআর (Bangla QR)</option>
+                <option value="cash">{t('method_cash')}</option>
+                <option value="bkash">{t('method_bkash')}</option>
+                <option value="nagad">{t('method_nagad')}</option>
+                <option value="rocket">{t('method_rocket')}</option>
+                <option value="card">{t('method_card')}</option>
+                <option value="bank">{t('method_bank')}</option>
+                <option value="bangla_qr">{t('method_bangla_qr')}</option>
               </select>
             </div>
           </div>
@@ -629,14 +631,14 @@ export const PosView: React.FC = () => {
           {/* Grand Total & Due Banner */}
           <div className="p-3 bg-white rounded-xl border border-[#dcebe2] flex items-center justify-between">
             <div>
-              <span className="text-[11px] text-[#688177]">সর্বমোট টাকা</span>
+              <span className="text-[11px] text-[#688177]">{t('total_amount')}</span>
               <div className="text-lg font-bold text-[#0b6b45] font-mono tabular-nums">
                 {formatMoney(totals.total, currency)}
               </div>
             </div>
             {totals.due > 0 && (
               <div className="text-right">
-                <span className="text-[11px] text-rose-600 font-semibold">বাকি (Due)</span>
+                <span className="text-[11px] text-rose-600 font-semibold">{t('due_amount')}</span>
                 <div className="text-base font-bold text-rose-700 font-mono tabular-nums">
                   {formatMoney(totals.due, currency)}
                 </div>
@@ -655,7 +657,7 @@ export const PosView: React.FC = () => {
             ) : (
               <Check className="w-4 h-4" />
             )}
-            বিক্রয় সম্পন্ন করুন (Complete Sale)
+            {t('complete_sale')}
           </button>
         </div>
       </div>
