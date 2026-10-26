@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+:root {
+  --g: #0b6b45;
+  --g2: #21ad70;
+  --bg: #f5faf7;
+  --ink: #12352a;
+  --muted: #688177;
+  --line: #dcebe2;
+  --neon: #2de4a0;
+  --neon-glow: rgba(45, 228, 160, 0.4);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: 'Hind Siliguri', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+}
+
+.font-pacifico {
+  font-family: 'Pacifico', cursive;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(11, 107, 69, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(33, 173, 112, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(33, 173, 112, 0.6);
+}
+
+/* Neon animations & glow */
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(45, 228, 160, 0.35), 0 0 24px rgba(45, 228, 160, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(45, 228, 160, 0.55), 0 0 35px rgba(45, 228, 160, 0.25);
+  }
+}
+
+.neon-glow-btn {
+  box-shadow: 0 4px 14px rgba(33, 173, 112, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.neon-glow-btn:hover {
+  box-shadow: 0 6px 20px rgba(45, 228, 160, 0.4);
+  transform: translateY(-1px);
+}
+
+.neon-border {
+  border-color: rgba(45, 228, 160, 0.3);
+}
+
+.neon-text-glow {
+  text-shadow: 0 0 10px rgba(45, 228, 160, 0.5);
+}
+
+/* Card hover subtle lift */
+.card-hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(11, 107, 69, 0.08);
+}
+
+/* Print styles for Thermal Receipt 80mm and A4 */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 5mm;
+  }
+}
