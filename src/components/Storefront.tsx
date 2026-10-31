@@ -438,10 +438,23 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                         </span>
                       </div>
                     )}
+                    {/* SKU badge */}
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2 py-0.5 text-[11px] font-mono font-medium bg-white/95 backdrop-blur-xs text-[#0b6b45] rounded-md shadow-xs border border-[#dcebe2]">
+                        {t('sku_code')}: {p.sku || '—'}
+                      </span>
+                    </div>
+
                     {/* Stock status badge */}
                     <div className="absolute top-3 right-3">
-                      <span className="px-2 py-0.5 text-[11px] font-semibold bg-white/90 backdrop-blur-xs text-[#0b6b45] rounded-md shadow-xs border border-[#dcebe2]">
-                        {t('stock_label')}: {p.stock}
+                      <span className={`px-2 py-0.5 text-[11px] font-semibold rounded-md shadow-xs border backdrop-blur-xs ${
+                        p.stock > 5
+                          ? 'bg-white/95 text-[#0b6b45] border-[#21ad70]/30'
+                          : p.stock > 0
+                          ? 'bg-amber-50/95 text-amber-800 border-amber-300'
+                          : 'bg-rose-50/95 text-rose-700 border-rose-200'
+                      }`}>
+                        {t('stock_qty')}: {p.stock}
                       </span>
                     </div>
                   </div>
@@ -460,18 +473,37 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                       {p.description && (
                         <p className="text-xs text-[#688177] line-clamp-1 mt-1">{p.description}</p>
                       )}
+
+                      {/* SKU and Stock details block */}
+                      <div className="mt-3 p-2 bg-[#f8fbf9] rounded-xl border border-[#e4f0e9] space-y-1 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#688177] font-medium text-[11px]">{t('sku_code')}:</span>
+                          <span className="font-mono font-semibold text-[#12352a] text-[11px] bg-white px-1.5 py-0.5 rounded border border-[#dcebe2]">
+                            {p.sku || '—'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#688177] font-medium text-[11px]">{t('stock_qty')}:</span>
+                          <span className={`font-bold tabular-nums text-[11px] ${
+                            p.stock > 5 ? 'text-[#0b6b45]' : p.stock > 0 ? 'text-amber-700' : 'text-rose-600'
+                          }`}>
+                            {p.stock > 0 ? `${p.stock} ${lang === 'bn' ? 'টি' : 'units'}` : (lang === 'bn' ? 'স্টক শেষ (Stock Out)' : 'Out of stock')}
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="pt-4 mt-2 border-t border-[#f5faf7] flex items-center justify-between gap-2">
+                    <div className="pt-3 mt-3 border-t border-[#f5faf7] flex items-center justify-between gap-2">
                       <div className="text-base sm:text-lg font-bold text-[#0b6b45] font-inter tabular-nums">
                         {formatMoney(p.sellPrice, currency)}
                       </div>
                       <button
                         onClick={() => addToCart(p)}
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#0b6b45] hover:bg-[#21ad70] rounded-xl shadow-xs transition-colors cursor-pointer"
+                        disabled={p.stock <= 0}
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#0b6b45] hover:bg-[#21ad70] disabled:bg-slate-300 disabled:cursor-not-allowed rounded-xl shadow-xs transition-colors cursor-pointer"
                       >
                         <Plus className="w-3.5 h-3.5" />
-                        {t('add_to_cart')}
+                        {p.stock <= 0 ? (lang === 'bn' ? 'স্টক নেই' : 'Stock Out') : t('add_to_cart')}
                       </button>
                     </div>
                   </div>
@@ -590,6 +622,14 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
                             <h4 className="text-xs sm:text-sm font-semibold text-[#12352a] truncate">
                               {it.product.name}
                             </h4>
+                            <div className="flex flex-wrap items-center gap-1.5 mt-0.5 text-[10px] text-[#688177]">
+                              <span className="font-mono bg-[#f5faf7] px-1 rounded border border-[#dcebe2]">
+                                {t('sku_code')}: {it.product.sku}
+                              </span>
+                              <span className="text-[#0b6b45] font-medium">
+                                {t('stock_qty')}: {it.product.stock}
+                              </span>
+                            </div>
                             <div className="text-xs text-[#0b6b45] font-semibold mt-0.5 tabular-nums">
                               {formatMoney(it.product.sellPrice, currency)}
                             </div>

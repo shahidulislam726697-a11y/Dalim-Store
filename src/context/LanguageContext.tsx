@@ -44,6 +44,8 @@ const translations: Record<Language, Record<string, string>> = {
     all_products: 'সব পণ্য',
     add_to_cart: 'কার্টে যোগ করুন',
     stock_label: 'মজুদ',
+    sku_code: 'SKU কোড',
+    stock_qty: 'বর্তমান স্টক (Stock Qty)',
     no_products_found: 'কোনো পণ্য পাওয়া যায়নি',
 
     // Trust Strip
@@ -173,6 +175,8 @@ const translations: Record<Language, Record<string, string>> = {
     all_products: 'All Products',
     add_to_cart: 'Add to Cart',
     stock_label: 'Stock',
+    sku_code: 'SKU Code',
+    stock_qty: 'Stock Qty',
     no_products_found: 'No products found',
 
     // Trust Strip
