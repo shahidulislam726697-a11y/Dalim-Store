@@ -192,20 +192,22 @@ export const Storefront: React.FC<{ onNavigateToAdmin: () => void }> = ({ onNavi
   };
 
   const filteredProducts = useMemo(() => {
-    return products.filter((p) => {
-      if (selectedCategory !== 'all' && p.categoryId !== selectedCategory) {
-        return false;
-      }
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        return (
-          p.name.toLowerCase().includes(q) ||
-          p.sku.toLowerCase().includes(q) ||
-          p.barcode.toLowerCase().includes(q)
-        );
-      }
-      return true;
-    });
+    return products
+      .filter((p) => {
+        if (selectedCategory !== 'all' && p.categoryId !== selectedCategory) {
+          return false;
+        }
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase().trim();
+          return (
+            p.name.toLowerCase().includes(q) ||
+            p.sku.toLowerCase().includes(q) ||
+            p.barcode.toLowerCase().includes(q)
+          );
+        }
+        return true;
+      })
+      .sort((a, b) => b.id - a.id); // Last entry product shows first
   }, [products, selectedCategory, searchQuery]);
 
   const currency = shop?.currencySymbol || '৳';

@@ -128,8 +128,11 @@ apiRouter.get('/store', (req, res) => {
   const categories = db.getCategories(shopId, true);
   const products = db.getProducts(shopId, { status: 'active', onlyInStock: true });
 
+  // Last entry product shows first in public view (newest products first)
+  const sortedProducts = [...products].sort((a, b) => b.id - a.id);
+
   // Sanitize products: remove buyPrice for public view
-  const publicProducts = products.map((p) => ({
+  const publicProducts = sortedProducts.map((p) => ({
     id: p.id,
     name: p.name,
     categoryId: p.categoryId,

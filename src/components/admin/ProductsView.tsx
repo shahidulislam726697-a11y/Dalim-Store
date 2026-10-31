@@ -240,7 +240,7 @@ export const ProductsView: React.FC<{ initialFilter?: string }> = ({ initialFilt
         );
       }
       return true;
-    });
+    }).sort((a, b) => b.id - a.id);
   }, [products, selectedCategory, lowStockOnly, searchQuery]);
 
   return (
