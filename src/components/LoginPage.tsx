@@ -83,6 +83,24 @@ export const LoginPage: React.FC<{
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Permanent Admin Quick Fill Info */}
+          <div className="p-3 bg-[#f5faf7] border border-[#dcebe2] rounded-xl flex items-center justify-between">
+            <div className="text-[11px] text-[#12352a]">
+              <span className="font-semibold block text-[#0b6b45]">অ্যাডমিন অ্যাকাউন্ট:</span>
+              <span className="text-[#688177] font-mono text-[10px]">shahidulislam726697@gmail.com</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('shahidulislam726697@gmail.com');
+                setPassword('12345678');
+              }}
+              className="px-2.5 py-1 text-[11px] font-semibold text-[#0b6b45] bg-white border border-[#21ad70] hover:bg-[#e8f7ee] rounded-lg transition-colors cursor-pointer"
+            >
+              অটো-ফিল (Auto-fill)
+            </button>
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-[#12352a] mb-1">ইমেইল অ্যাড্রেস</label>
             <div className="relative">
@@ -90,7 +108,7 @@ export const LoginPage: React.FC<{
               <input
                 type="email"
                 required
-                placeholder="admin@dalimstore.com"
+                placeholder="shahidulislam726697@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#f5faf7] border border-[#dcebe2] rounded-xl focus:outline-none focus:border-[#21ad70]"

@@ -14,7 +14,20 @@
       "createdAt": "2026-10-26T05:07:16.430Z"
     }
   ],
-  "users": [],
+  "users": [
+    {
+      "id": 1,
+      "shopId": 1,
+      "fullName": "Shahidul Islam",
+      "email": "shahidulislam726697@gmail.com",
+      "phone": "01700000000",
+      "passwordHash": "$2b$10$N2x65T5oSXI1otcqbxBOHecjEh2vGKbOyNJvGi/bKqF8aBHO.7ddm",
+      "role": "admin",
+      "isActive": true,
+      "createdAt": "2026-10-31T04:17:58.551Z",
+      "updatedAt": "2026-10-31T04:17:58.552Z"
+    }
+  ],
   "categories": [
     {
       "id": 1,
@@ -302,7 +315,7 @@
   "activityLogs": [],
   "sequences": {
     "shopId": 2,
-    "userId": 1,
+    "userId": 2,
     "categoryId": 5,
     "productId": 9,
     "customerId": 2,

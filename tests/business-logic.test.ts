@@ -50,4 +50,15 @@ describe('Dalim Store POS Business Logic Tests', () => {
     expect(result.success).toBe(false);
     expect(result.error).toContain('Insufficient stock');
   });
+
+  it('guarantees permanent admin user shahidulislam726697@gmail.com with password 12345678', async () => {
+    const adminUser = db.getUserByEmail('shahidulislam726697@gmail.com');
+    expect(adminUser).not.toBeNull();
+    expect(adminUser?.role).toBe('admin');
+    expect(adminUser?.isActive).toBe(true);
+
+    const { verifyPassword } = await import('../src/lib/auth.ts');
+    const isPasswordValid = await verifyPassword('12345678', adminUser!.passwordHash);
+    expect(isPasswordValid).toBe(true);
+  });
 });
